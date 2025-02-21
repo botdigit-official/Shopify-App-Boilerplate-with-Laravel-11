@@ -19,12 +19,18 @@ class AdminController extends Controller
         $this->middleware('admin');
     }
 
-     public function dashboard(): View
+    public function dashboard(): View
     {
         // Get recent installations (last 30 days)
         $recentInstallations = Store::where('installed', true)
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->count();
+
+        // Get stores with pagination
+        $stores = Store::latest()->paginate(10);
+
+        // Get 5 most recent stores directly without mapping
+        $recentStores = Store::latest()->take(5)->get();
 
         // Compile all stats
         $stats = [
@@ -32,20 +38,10 @@ class AdminController extends Controller
             'active_stores' => Store::where('installed', true)->count(),
             'recent_installs' => $recentInstallations,
             'total_admins' => User::where('is_admin', true)->count(),
-            'recent_stores' => Store::latest()
-                ->take(5)
-                ->get()
-                ->map(function ($store) {
-                    return [
-                        'shop_domain' => $store->shop_domain,
-                        'installed' => $store->installed,
-                        'created_at' => $store->created_at,
-                        'status' => $store->installed ? 'Active' : 'Inactive'
-                    ];
-                }),
+            'recent_stores' => $recentStores
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        return view('admin.dashboard', compact('stats', 'stores'));
     }
 
     public function stores(): View
