@@ -34,6 +34,8 @@ Admin dashboard for app control
 
 Store installation and uninstallation
 
+Product listing endpoint example
+
 🎨 Frontend & UX
 
 Tailwind CSS integration
@@ -71,6 +73,14 @@ php artisan migrate
 5️⃣ Serve the App
 
 php artisan serve
+
+Navigate to `https://your-app-url/shopify/products?shop=your-store.myshopify.com` to view the example product listing.
+
+Run tests with:
+
+```bash
+php artisan test
+```
 
 🔐 Security Considerations
 

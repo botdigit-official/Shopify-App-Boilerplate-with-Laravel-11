@@ -92,6 +92,7 @@ Route::prefix('shopify')->group(function () {
     Route::middleware(['auth.shopify'])->group(function () {
         
         Route::get('dashboard', [ShopifyController::class, 'dashboard'])->name('shopify.dashboard');
+        Route::get('products', [ShopifyController::class, 'products'])->name('shopify.products');
         // Add other protected Shopify routes here
     });
 });

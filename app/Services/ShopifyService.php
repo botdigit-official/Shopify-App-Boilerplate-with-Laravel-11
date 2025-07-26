@@ -108,6 +108,26 @@ class ShopifyService
         }
     }
 
+    public function getProducts(Store $store, int $limit = 10): ?array
+    {
+        try {
+            $response = Http::withToken($store->access_token)
+                ->get("https://{$store->shop_domain}/admin/api/2024-01/products.json", [
+                    'limit' => $limit,
+                ]);
+
+            if (!$response->successful()) {
+                throw new \Exception('Failed to fetch products: ' . $response->body());
+            }
+
+            return $response->json('products');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch products: ' . $e->getMessage());
+            return null;
+        }
+    }
+
     protected function createWebhook(Store $store, string $topic, string $address): void
     {
         try {
