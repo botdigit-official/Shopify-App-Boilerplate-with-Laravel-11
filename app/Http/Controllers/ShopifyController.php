@@ -160,6 +160,24 @@ class ShopifyController extends Controller
         ]);
     }
 
+    public function products(Request $request): View
+    {
+        $store = $request->get('store');
+        if (!$store) {
+            $shop = $request->get('shop');
+            $store = Store::where('shop_domain', $shop)
+                ->where('installed', true)
+                ->firstOrFail();
+        }
+
+        $products = $this->shopifyService->getProducts($store, 5);
+
+        return view('shopify.products', [
+            'store' => $store,
+            'products' => $products ?? []
+        ]);
+    }
+
     private function redirectToEmbeddedAdmin(string $shop, string $redirectUrl): RedirectResponse
     {
         $apiKey = config('shopify.api_key');
